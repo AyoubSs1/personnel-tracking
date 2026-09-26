@@ -24,40 +24,6 @@ location.
 - Local web dashboard
 - Camera management through database configuration
 
-
-## Architecture
-
-```text
-Camera
-   |
-   v
-Camera Manager
-   |
-   v
-YOLO + ByteTrack
-   |
-   v
-Face Recognition
-   |
-   +-------------------+
-   |                   |
-Known Employee      Unknown Person
-   |                   |
-   v                   v
-Detection Service   Alert Service
-   |                   |
-   +---------+---------+
-             |
-             v
-          SQLite
-             |
-             v
-      Location Service
-             |
-             v
-       Flask Dashboard
-
-
 ## Project Structure
 
 personnel_tracking/
@@ -92,4 +58,37 @@ personnel_tracking/
 ├── requirements.txt
 ├── .gitignore
 └── README.md
+
+
+## Architecture
+
+```text
+Camera
+   |
+   v
+Camera Manager
+   |
+   v
+YOLO + ByteTrack
+   |
+   v
+Face Recognition
+   |
+   +-------------------+
+   |                   |
+Known Employee      Unknown Person
+   |                   |
+   v                   v
+Detection Service   Alert Service
+   |                   |
+   +---------+---------+
+             |
+             v
+          SQLite
+             |
+             v
+      Location Service
+             |
+             v
+       Flask Dashboard
 
