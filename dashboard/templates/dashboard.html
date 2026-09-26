@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Personnel Tracking</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/dashboard.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+    <!-- ================================================= -->
+    <!-- SIDEBAR -->
+    <!-- ================================================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                PT
+            </div>
+
+            <div>
+                <h2>Personnel</h2>
+                <span>Tracking</span>
+            </div>
+
+        </div>
+
+
+        <nav>
+
+            <button
+                class="nav-item active"
+                onclick="showSection('overview')"
+            >
+                🏠 Dashboard
+            </button>
+
+            <button
+                class="nav-item"
+                onclick="showSection('employees')"
+            >
+                👤 Employés
+            </button>
+
+            <button
+                class="nav-item"
+                onclick="showSection('cameras')"
+            >
+                📷 Caméras
+            </button>
+
+            <button
+                class="nav-item"
+                onclick="showSection('history')"
+            >
+                🕒 Historique
+            </button>
+
+            <button
+                class="nav-item"
+                onclick="showSection('alerts')"
+            >
+                🚨 Alertes
+            </button>
+
+        </nav>
+
+
+        <div class="system-status">
+
+            <span class="status-dot"></span>
+
+            <div>
+                <strong>Système actif</strong>
+                <small>Monitoring local</small>
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================================================= -->
+    <!-- MAIN -->
+    <!-- ================================================= -->
+
+    <main class="main">
+
+        <!-- HEADER -->
+
+        <header class="header">
+
+            <div>
+
+                <h1 id="page-title">
+                    Dashboard
+                </h1>
+
+                <p>
+                    Surveillance du personnel en temps réel
+                </p>
+
+            </div>
+
+
+            <div class="header-right">
+
+                <span id="last-update">
+                    Mise à jour...
+                </span>
+
+                <button
+                    class="refresh-btn"
+                    onclick="loadDashboard()"
+                >
+                    ↻
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================================================= -->
+        <!-- OVERVIEW -->
+        <!-- ================================================= -->
+
+        <section
+            id="overview"
+            class="section active"
+        >
+
+            <!-- STAT CARDS -->
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        👤
+                    </div>
+
+                    <div>
+
+                        <span>Employés</span>
+
+                        <strong id="employees-count">
+                            -
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        📷
+                    </div>
+
+                    <div>
+
+                        <span>Caméras</span>
+
+                        <strong id="cameras-count">
+                            -
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        👁
+                    </div>
+
+                    <div>
+
+                        <span>Détections</span>
+
+                        <strong id="detections-count">
+                            -
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card alert-card">
+
+                    <div class="stat-icon">
+                        🚨
+                    </div>
+
+                    <div>
+
+                        <span>Alertes</span>
+
+                        <strong id="alerts-count">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- LOCATIONS -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>
+                            Dernières localisations
+                        </h2>
+
+                        <p>
+                            Position connue de chaque employé
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Employé</th>
+                                <th>Matricule</th>
+                                <th>Caméra</th>
+                                <th>Localisation</th>
+                                <th>Date</th>
+                                <th>Heure</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="locations-table">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <!-- ALERTS -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>
+                            Alertes récentes
+                        </h2>
+
+                    </div>
+
+                </div>
+
+                <div id="alerts-container">
+
+                    <div class="empty-state">
+
+                        ✓
+
+                        <p>
+                            Aucune alerte récente
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- EMPLOYEES -->
+        <!-- ================================================= -->
+
+        <section
+            id="employees"
+            class="section"
+        >
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <h2>
+                        Employés
+                    </h2>
+
+                </div>
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>ID</th>
+                                <th>Matricule</th>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Créé le</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="employees-table">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- CAMERAS -->
+        <!-- ================================================= -->
+
+        <section
+            id="cameras"
+            class="section"
+        >
+
+            <div class="camera-grid" id="camera-grid">
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- HISTORY -->
+        <!-- ================================================= -->
+
+        <section
+            id="history"
+            class="section"
+        >
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>
+                            Historique des détections
+                        </h2>
+
+                        <p>
+                            50 dernières détections
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Matricule</th>
+                                <th>Employé</th>
+                                <th>Caméra</th>
+                                <th>Localisation</th>
+                                <th>Date</th>
+                                <th>Heure</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="history-table">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- ALERTS -->
+        <!-- ================================================= -->
+
+        <section
+            id="alerts"
+            class="section"
+        >
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>
+                            Alertes de sécurité
+                        </h2>
+
+                        <p>
+                            Personnes inconnues détectées
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div id="alerts-page">
+
+                    <div class="empty-state">
+
+                        <p>
+                            Aucune alerte enregistrée.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- JAVASCRIPT -->
+<!-- ================================================= -->
+
+<script
+    src="{{ url_for('static', filename='js/dashboard.js') }}"
+></script>
+
+
+</body>
+
+</html>
