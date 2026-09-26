@@ -26,6 +26,7 @@ location.
 
 ## Project Structure
 
+```text
 personnel_tracking/
 │
 ├── app/
@@ -58,6 +59,7 @@ personnel_tracking/
 ├── requirements.txt
 ├── .gitignore
 └── README.md
+```
 
 
 ## Architecture
